@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Mail\NovaTarefaMail;
 use App\Models\Tarefa;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 
 class TarefaController extends Controller
 {
@@ -17,29 +18,13 @@ class TarefaController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index()
     {
-        if (Auth::check()){
-            $id = Auth::user()->id;
-            $name = Auth::user()->name;
-            $email = Auth::user()->email;
-
-            return "ID: $id, Nome: $name, Email: $email";
-        } else {
-            return 'Você não está logado no sistema';
-        }
-
-//        if (!auth()->check()){
-//            return 'Você não está logado no sistema';
-//        }
-//
-//        $id = auth()->user()->id;
-//        $name = auth()->user()->name;
-//        $email = auth()->user()->email;
-//
-//        return "ID: $id, Nome: $name, Email: $email";
+        $user_id = auth()->user()->id;
+        $tarefas = Tarefa::where('user_id',$user_id)->get();
+        return view('tarefa.index', ['tarefas' => $tarefas]);
     }
 
     /**
